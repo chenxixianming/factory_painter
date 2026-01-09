@@ -1,0 +1,6 @@
+__pycache__/
+.devcontainer/
+data/*.png
+data/*.jpg
+output/
+*.log

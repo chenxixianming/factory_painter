@@ -1,0 +1,5 @@
+paddlepaddle
+paddleocr
+opencv-python-headless
+numpy
+paddlex[ocr]
