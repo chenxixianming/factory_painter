@@ -10,7 +10,7 @@ from text_restorer import TextRestorer
 
 
 # --- 1. 配置路径 ---
-img_name = "map_8.png"
+img_name = "map_10.png"
 img_path = os.path.join("data", img_name)
 output_dir = "output"
 os.makedirs(output_dir, exist_ok=True)
@@ -111,10 +111,10 @@ for i, mask in enumerate(all_masks):
 
 # 6. 保存结果
 # result = cv2.addWeighted(image_bgr, 0.7, color_overlay, 0.3, 0)
-save_path = os.path.join("output", f"sam2_box_whight_colored_{img_name}")
-# cv2.imwrite(save_path, result)
-cv2.imwrite(save_path, color_overlay)
-print(f"✅ 结果已保存至: {save_path}")
+# save_path = os.path.join("output", f"sam2_box_whight_colored_{img_name}")
+# # cv2.imwrite(save_path, result)
+# cv2.imwrite(save_path, color_overlay)
+# print(f"✅ 结果已保存至: {save_path}")
 
 save_path = os.path.join("cache", "character_mask", "character_mask.png")
 cv2.imwrite(save_path, character_mask)
@@ -185,10 +185,10 @@ for i, item in enumerate(ocr_results):
     print(f"已从 JSON 读取并上色: {text}")
 
 # --- 3. 合成保存 ---
-final_res = cv2.addWeighted(image_bgr, 0.7, color_overlay, 0.3, 0)
-save_path = os.path.join("output", f"point_colored_{img_name}")
-cv2.imwrite(save_path, final_res)
-print(f"picture saved to: {save_path}")
+# final_res = cv2.addWeighted(image_bgr, 0.7, color_overlay, 0.3, 0)
+# save_path = os.path.join("output", f"point_colored_{img_name}")
+# cv2.imwrite(save_path, final_res)
+# print(f"picture saved to: {save_path}")
 
 
 #-------------------------------------------------------------
