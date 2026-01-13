@@ -129,6 +129,36 @@ class ResultVisualizer:
                     else:
                         print(f"Error reading mask: {mask_path}")
 
+
+        # char_mask_path = os.path.join("cache", "character", "character_mask.png")
+        # if os.path.exists(char_mask_path):
+        #     # 读取 mask (保留三通道，因为要判断是否为白色 [255,255,255])
+        #     char_mask = cv2.imread(char_mask_path)
+        #     if char_mask is not None:
+        #         # 安全检查：确保尺寸一致，不一致则缩放
+        #         if char_mask.shape != img_shape:
+        #             char_mask = cv2.resize(char_mask, (img_shape[1], img_shape[0]))
+                
+        #             # 定义白色的范围 (OpenCV中 BGR 也是 255,255,255)
+        #             # 使用 inRange 提取精确的白色像素 mask
+        #             lower_white = np.array([255, 255, 255], dtype=np.uint8)
+        #             upper_white = np.array([255, 255, 255], dtype=np.uint8)
+                    
+        #             # white_area 是一个二值图，白色区域为 255，其他为 0
+        #             white_area = cv2.inRange(char_mask, lower_white, upper_white)
+                    
+        #             # --- 核心替换逻辑 ---
+        #             # 在 white_area > 0 (即白色) 的位置，
+        #             # 将 canvas_img 的像素替换回 base_img (最原始的未污染图像) 的像素
+        #             canvas_img[white_area > 0] = base_img[white_area > 0]
+                    
+        #             print(f"Character restored using: {char_mask_path}")
+        #         else:
+        #             print(f"Warning: Failed to read existing character mask at {char_mask_path}")
+        #     else:
+        #         # 如果文件不存在，可以根据需求选择 print 或者 pass
+        #         print(f"Note: No character mask found at {char_mask_path}, skipping restoration.")
+
         # 3. 保存结果图像
         output_path = os.path.join(self.output_dir, output_filename)
         cv2.imwrite(output_path, canvas_img)

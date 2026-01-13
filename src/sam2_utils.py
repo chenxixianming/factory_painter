@@ -106,9 +106,7 @@ class SAM2Segmenter:
         # 去掉中间那个维度 1，变成 (N, H, W)，方便后续遍历使用
         if masks.ndim == 4:
             masks = masks.squeeze(1)
-
-        if save_cache:
-            self._save_to_cache(self, masks, prefix= "box_mask")          
+      
         return masks
     
 # ==========================================

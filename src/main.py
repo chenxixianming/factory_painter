@@ -6,10 +6,11 @@ from ocr_utils import IndustrialOCRManager
 from sam2_utils import SAM2Segmenter
 from mask_overlap import MaskOverlapFilter
 from result_drawer import ResultVisualizer
+from text_restorer import TextRestorer
 
 
 # --- 1. 配置路径 ---
-img_name = "map_10.png"
+img_name = "map_8.png"
 img_path = os.path.join("data", img_name)
 output_dir = "output"
 os.makedirs(output_dir, exist_ok=True)
@@ -85,6 +86,7 @@ sam2 = SAM2Segmenter(model_type="tiny")
 image_bgr = cv2.imread(img_path)
 image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 color_overlay = image_bgr.copy()
+character_mask = np.zeros_like(image_bgr)
 
 # 4. 【核心调用】批量获取所有 Masks
 # 这一步非常快，因为是一次性推理
@@ -102,16 +104,22 @@ for i, mask in enumerate(all_masks):
     
     # 上色
     color_overlay[mask_bool] = color
+    character_mask[mask_bool] = color
     
     # 打印对应的文字（方便调试）
     print(f"已处理: {ocr_results[i]['text']}")
 
 # 6. 保存结果
-result = cv2.addWeighted(image_bgr, 0.7, color_overlay, 0.3, 0)
+# result = cv2.addWeighted(image_bgr, 0.7, color_overlay, 0.3, 0)
 save_path = os.path.join("output", f"sam2_box_whight_colored_{img_name}")
 # cv2.imwrite(save_path, result)
 cv2.imwrite(save_path, color_overlay)
 print(f"✅ 结果已保存至: {save_path}")
+
+save_path = os.path.join("cache", "character_mask", "character_mask.png")
+cv2.imwrite(save_path, character_mask)
+print(f"character_mask已保存至: {save_path}")
+
 
 
 
@@ -263,6 +271,21 @@ except Exception as e:
     print(f"❌ Unexpected Error: {e}")
     import traceback
     traceback.print_exc()
+
+
+
+#-------------------------------------------------------------
+#写回文字
+#-------------------------------------------------------------
+
+
+restorer = TextRestorer()
+try:
+    # 请确保 ./data/factory.jpg 和 ./output/processed_factory.jpg 存在
+    restorer.run(img_name)
+except Exception as e:
+    print(f"Error: {e}")
+
 
 
 #-------------------------------------------------------------
