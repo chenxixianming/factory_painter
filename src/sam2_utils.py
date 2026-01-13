@@ -29,7 +29,28 @@ class SAM2Segmenter:
         self.predictor = SAM2ImagePredictor(self.model)
         print("✅ SAM 2 模型加载成功")
 
-    def get_mask_by_point(self, image_rgb, point_coords):
+    def _save_to_cache(self, masks, texts_list = None, prefix = "mask"):
+        """save masks to ./cache"""
+        cache_dir = os.path.join(root_dir, "cache", "charactor_mask")
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+            print(f" 已创建缓存目录: {cache_dir}")
+        
+        for i, mask in enumerate(masks):
+            curr_mask = mask[0] if mask.ndim == 3 else mask
+            mask_img = (curr_mask.astype(np.uint8)) * 255
+
+            if texts_list and i < len(texts_list):
+                file_label = texts_list[i]
+            else:
+                file_label = f"{prefix}_{i}"
+            
+            file_label = "".join(x for x in str(file_label) if x.isalnum() or x in "._- ")
+            save_path = os.path.join(cache_dir, f"charactor_mask.png")
+            cv2.imwrite(save_path, mask_img)
+            print(f"mask已保存至{save_path}")
+
+    def get_mask_by_point(self, image_rgb, point_coords, save_cache = False, texts_list = None):
         """
         根据坐标点获取分割掩码
         :param image_rgb: RGB 格式的图像数组
@@ -51,9 +72,13 @@ class SAM2Segmenter:
         )
         if masks.ndim == 4:
             masks = masks.squeeze(1)
+
+        if save_cache:
+            self._save_to_cache(masks, texts_list, prefix= "point_mask")
+
         return masks
     
-    def get_masks_by_boxes(self, image_rgb, boxes_list):
+    def get_masks_by_boxes(self, image_rgb, boxes_list, save_cache = False, texts_list = None):
         """
         根据一组矩形框批量生成分割掩码 (Batch Inference)
         :param image_rgb: 图像数组 (RGB)
@@ -81,7 +106,9 @@ class SAM2Segmenter:
         # 去掉中间那个维度 1，变成 (N, H, W)，方便后续遍历使用
         if masks.ndim == 4:
             masks = masks.squeeze(1)
-            
+
+        if save_cache:
+            self._save_to_cache(self, masks, prefix= "box_mask")          
         return masks
     
 # ==========================================
